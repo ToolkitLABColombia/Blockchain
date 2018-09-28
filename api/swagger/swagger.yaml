@@ -49,7 +49,7 @@ paths:
       - "documents"
       summary: "Uploads a document"
       description: "Uploads a document"
-      operationId: uploadFile
+      operationId: saveFile
       consumes:
       - "multipart/form-data"
       produces:
@@ -75,6 +75,8 @@ definitions:
         type: object
         properties:
           tx:
+            type: string
+          hash:
             type: string
   HelloWorldResponse:
     required:
