@@ -1,7 +1,7 @@
-const controllerHelper = require('../helpers/controller')
-const documentService = require('../services/document')
+import controllerHelper from '../helpers/controller'
+import documentService from '../services/document'
 
-function saveFile (req, res) {
+const saveFile = (req, res) => {
   const file = req.swagger.params.file.value
   documentService.saveFile(file)
     .then(result => {

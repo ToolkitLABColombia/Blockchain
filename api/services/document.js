@@ -1,13 +1,14 @@
-const {errors} = require('../helpers/error')
+import { errors } from '../helpers/error'
+import IPFSRepository from '../repositories/IPFS'
 
-function saveFile (file) {
-  return new Promise((resolve, reject) => {
-    if (file.mimetype.split('/')[1] === 'pdf')
-      resolve(file.originalname)
-    reject(errors.FORBIDDEN)
-  })
-}
+const saveFile = file => new Promise((resolve, reject) => {
+  IPFSRepository.add(file)
+    .then(resolve)
+    .catch(() => {
+      reject(errors.INTERNAL_SERVER_ERROR)
+    })
+})
 
-module.exports = {
+export default {
   saveFile
 }
