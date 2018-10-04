@@ -22,7 +22,4 @@ export const errors = {
   }
 }
 
-export const error = code => {
-  const c = !!errors[code] ? code : 500
-  return errors[c]
-}
+export const error = (code, detailed = null) => Object.assign(code, {detailed})

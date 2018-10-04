@@ -9,13 +9,17 @@ const add = file => new Promise((resolve, reject) => {
       fs.readFile(`/tmp/${file.originalname}`, (err, data) => {
         if (err) throw err
         const formData = new FormData()
-        formData.append('file', data)
+        formData.append('file', data, file.originalname)
         // TODO: turn pin to true on production
-        axios.post('https://ipfs.infura.io:5001/api/v0/add?pin=false', formData, {headers: {'Content-Type': 'multipart/form-data'}})
+        axios.post('https://ipfs.infura.io:5001/api/v0/add?pin=false', formData, {headers: formData.getHeaders()})
           .then(response => {
-            resolve(response.data.Hash)
+            const {Hash, Name} = response.data
+            resolve({Hash, Name})
           })
-          .catch(reject)
+          .catch(error => {
+            console.error(error)
+            reject(error)
+          })
       })
     })
   } catch (e) {
