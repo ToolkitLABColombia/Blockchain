@@ -42,10 +42,42 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+  /document:
+    x-swagger-router-controller: document
+    post:
+      tags: 
+      - "documents"
+      summary: "Uploads a document"
+      description: "Uploads a document"
+      operationId: saveFile
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "file"
+        in: "formData"
+        description: "file to upload"
+        required: true
+        type: "file"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ApiResponse"
   /swagger:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
 definitions:
+  ApiResponse:
+    properties:
+      transaction:
+        type: object
+        properties:
+          tx:
+            type: string
+          hash:
+            type: string
   HelloWorldResponse:
     required:
       - message
