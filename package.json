@@ -13,7 +13,8 @@
     "form-data": "^2.3.2",
     "fs": "^0.0.1-security",
     "lodash": "^4.17.11",
-    "swagger-express-mw": "^0.1.0"
+    "swagger-express-mw": "^0.1.0",
+    "web3": "^0.20.6"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
