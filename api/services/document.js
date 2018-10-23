@@ -4,8 +4,7 @@ import {Toolkit} from '../repositories/SmartContract'
 
 const saveFile = file => new Promise((resolve, reject) => {
   IPFSRepository.add(file)
-    .then(response => response.Hash)
-    .then(hash => {})
+    .then(response => {resolve(response)})
     .catch(e => {
       reject(error(errors.INTERNAL_SERVER_ERROR, e.message))
     })

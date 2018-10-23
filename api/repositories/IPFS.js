@@ -1,6 +1,6 @@
-import axios from 'axios'
 import FormData from 'form-data'
 import fs from 'fs'
+import {ipfs} from '../helpers/IPFS'
 
 const add = file => new Promise((resolve, reject) => {
   try {
@@ -10,16 +10,11 @@ const add = file => new Promise((resolve, reject) => {
         if (err) throw err
         const formData = new FormData()
         formData.append('file', data, file.originalname)
-        // TODO: turn pin to true on production
-        axios.post('https://ipfs.infura.io:5001/api/v0/add?pin=false', formData, {headers: formData.getHeaders()})
-          .then(response => {
-            const {Hash, Name} = response.data
-            resolve({Hash, Name})
-          })
-          .catch(error => {
-            console.error(error)
-            reject(error)
-          })
+        ipfs.add(formData, (err, response) => {
+          if(err) console.log(err)
+          console.log(response)
+          resolve(response)
+        })
       })
     })
   } catch (e) {
