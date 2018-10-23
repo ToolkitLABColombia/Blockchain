@@ -22,9 +22,9 @@ paths:
     x-swagger-router-controller: document
     post:
       tags: 
-      - "documents"
-      summary: "Uploads a document"
-      description: "Uploads a document"
+      - documents
+      summary: Uploads a document
+      description: Uploads a document
       operationId: saveFile
       consumes:
       - "multipart/form-data"
@@ -41,6 +41,27 @@ paths:
           description: "successful operation"
           schema:
             $ref: "#/definitions/ApiResponse"
+  /document/{documentHash}:
+    x-swagger-router-controller: document
+    get:
+      tags: 
+      - "documents"
+      summary: Gets a document by its hash
+      description: Gets a document from IPFS using its hash
+      operationId: getFile
+      produces:
+      - application/pdf
+      parameters:
+      - name: documentHash
+        in: path
+        description: Document hash
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            type: file
   /hash:
     x-swagger-router-controller: document
     post:

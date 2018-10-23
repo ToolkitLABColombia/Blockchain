@@ -1,5 +1,4 @@
-import FormData from 'form-data'
-import fs from 'fs'
+import fileType from 'file-type'
 import {ipfs} from '../helpers/IPFS'
 
 const add = file => new Promise((resolve, reject) => {
@@ -11,6 +10,15 @@ const add = file => new Promise((resolve, reject) => {
   })
 })
 
+const get = hash => new Promise((resolve, reject) => {
+  ipfs.files.cat(hash, (err, response) => {
+    if(err) reject(err)
+    const type = fileType(response)
+    resolve({type, content: response})
+  })
+})
+
 export default {
-  add
+  add,
+  get
 }

@@ -12,6 +12,18 @@ const saveFile = (req, res) => {
     })
 }
 
+const getFile = (req, res) => {
+  const hash = req.swagger.params.documentHash.value
+  documentService.getFile(hash)
+    .then(result => {
+      res.writeHead(200, {'Content-Type': result.type.mime})
+      res.end(new Buffer(result.content), 'binary')
+    })
+    .catch(error => {
+      controllerHelper.handleError(error, res)
+    })
+}
+
 const saveHash = (req, res) => {
   const hash = req.swagger.params.hash.value.hash
   documentService.saveHash(hash)
@@ -25,5 +37,6 @@ const saveHash = (req, res) => {
 
 module.exports = {
   saveFile,
+  getFile,
   saveHash
 }
