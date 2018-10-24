@@ -18,37 +18,13 @@ consumes:
 produces:
   - application/json
 paths:
-  /hello:
-    # binds a127 app logic to a route
-    x-swagger-router-controller: hello_world
-    get:
-      description: Returns 'Hello' to the caller
-      # used as the method name of the controller
-      operationId: hello
-      parameters:
-        - name: name
-          in: query
-          description: The name of the person to whom to say hello
-          required: false
-          type: string
-      responses:
-        "200":
-          description: Success
-          schema:
-            # a pointer to a definition
-            $ref: "#/definitions/HelloWorldResponse"
-        # responses may fall through to errors
-        default:
-          description: Error
-          schema:
-            $ref: "#/definitions/ErrorResponse"
   /document:
     x-swagger-router-controller: document
     post:
       tags: 
-      - "documents"
-      summary: "Uploads a document"
-      description: "Uploads a document"
+      - documents
+      summary: Uploads a document
+      description: Uploads a document
       operationId: saveFile
       consumes:
       - "multipart/form-data"
@@ -65,10 +41,58 @@ paths:
           description: "successful operation"
           schema:
             $ref: "#/definitions/ApiResponse"
+  /document/{documentHash}:
+    x-swagger-router-controller: document
+    get:
+      tags: 
+      - "documents"
+      summary: Gets a document by its hash
+      description: Gets a document from IPFS using its hash
+      operationId: getFile
+      produces:
+      - application/pdf
+      - image/jpeg
+      parameters:
+      - name: documentHash
+        in: path
+        description: Document hash
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            type: file
+  /hash:
+    x-swagger-router-controller: document
+    post:
+      tags: 
+      - "documents"
+      summary: HAHA
+      description: HAHA
+      operationId: saveHash
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+        - in: body
+          name: hash
+          description: Etwas
+          required: true
+          schema:
+            $ref: "#/definitions/Hash"
+      responses:
+        200:
+          description: OK
   /swagger:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
 definitions:
+  Hash:
+    properties:
+      hash:
+        type: string
   ApiResponse:
     properties:
       transaction:
@@ -78,15 +102,3 @@ definitions:
             type: string
           hash:
             type: string
-  HelloWorldResponse:
-    required:
-      - message
-    properties:
-      message:
-        type: string
-  ErrorResponse:
-    required:
-      - message
-    properties:
-      message:
-        type: string
