@@ -51,6 +51,7 @@ paths:
       operationId: getFile
       produces:
       - application/pdf
+      - image/jpeg
       parameters:
       - name: documentHash
         in: path

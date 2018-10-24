@@ -17,7 +17,7 @@ const getFile = (req, res) => {
   documentService.getFile(hash)
     .then(result => {
       res.writeHead(200, {'Content-Type': result.type.mime})
-      res.end(new Buffer(result.content), 'binary')
+      res.end(new Buffer.from(result.content), 'binary')
     })
     .catch(error => {
       controllerHelper.handleError(error, res)
