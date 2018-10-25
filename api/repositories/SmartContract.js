@@ -1,5 +1,5 @@
 import {config} from 'dotenv'
-import HDWallet from 'truffle-hdwallet-provider'
+import Tx from 'ethereumjs-tx'
 import ToolkitContract from '../contracts/Toolkit'
 import Web3 from 'web3'
 
@@ -8,19 +8,23 @@ config()
 const abi = ToolkitContract.abi
 const address = process.env.contractAddress
 const mnemonic = process.env.mnemonic
+const privateKey = Buffer.from(mnemonic, 'hex')
 const host = process.env.host || 'http://localhost:8545'
-const hdWallet = new HDWallet(mnemonic, host)
-let account
+const account = process.env.account
+const from = {from: account}
 
 export const Toolkit = {
   contract: null,
+  web3: null,
 
-  init: async() => new Promise((resolve, reject) => {
+  /**
+   * Initializes a contract instance to be queried.
+   * @returns {Promise<Boolean>} true on success
+   */
+  init: () => new Promise((resolve, reject) => {
     try {
-      const web3 = new Web3(new Web3.providers.HttpProvider(host))
-      const contract = web3.eth.contract(abi)
-      Toolkit.contract = contract.at(address)
-      account = hdWallet.getAddress(0)
+      Toolkit.web3 = new Web3(new Web3.providers.HttpProvider(host))
+      Toolkit.contract = new Toolkit.web3.eth.Contract(abi, address, Object.assign({gasLimit: 3000000}, from))
       resolve(true)
     }
     catch (e) {
@@ -28,14 +32,59 @@ export const Toolkit = {
     }
   }),
 
-  add: data => new Promise((resolve, reject) => {
-    const {hash, name} = data
-    const part1 = hash.substr(0, 32)
-    const part2 = hash.substr(32)
-    Toolkit.contract.add(part1, part2, name, {from: account}, (err, result) => {
-      if (err) reject(err)
-      const response = {hash, tx: result}
-      resolve(response)
-    })
+  /**
+   * Post makes calls to the writing contract functions
+   * @param functionName The expected contract function to be executed
+   * @param params An array of the expected parameters the contract function receives.
+   * @returns {Promise<String>} A transaction hash on successful operations.
+   */
+  post: (functionName, params) => new Promise((resolve, reject) => {
+    console.log(`${functionName}(${params.join()})`)
+    const functionAbi = Toolkit.contract.methods[functionName](...params).encodeABI()
+    sign(functionAbi)
+      .then(serializedTx => {
+        Toolkit.web3.eth.sendSignedTransaction(`0x${serializedTx}`)
+          .then(tx => {
+            console.log(tx.transactionHash)
+            resolve(tx.transactionHash)
+          })
+      })
+      .catch(reject)
+  }),
+
+  /**
+   * Get makes calls to the only read contract functions
+   * @param functionName The expected contract function to be consulted
+   * @param params An array of the expected parameters the contract function receives
+   * @returns {Promise<any>} A tuple of n-th elements the function returns
+   */
+  get: (functionName, params) => new Promise((resolve, reject) => {
+    Toolkit.contract.methods[functionName](...params).call({from: account})
+      .then(resolve)
+      .catch(reject)
   })
 }
+
+const sign = functionAbi => new Promise((resolve, reject) => {
+  try {
+    console.log('Signing transaction...')
+    Toolkit.web3.eth.getTransactionCount(account)
+      .then(nonce => {
+        console.log(`Nonce: ${nonce}`)
+        const txParams = {
+          gasPrice: 100000,
+          gasLimit: 3000000,
+          to: address,
+          data: functionAbi,
+          from: account,
+          nonce
+        }
+        const tx = new Tx(txParams)
+        tx.sign(privateKey)
+        resolve(tx.serialize().toString('hex'))
+      })
+  }
+  catch (e) {
+    reject(e)
+  }
+})
