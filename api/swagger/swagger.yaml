@@ -18,43 +18,61 @@ consumes:
 produces:
   - application/json
 paths:
-  /hello:
-    # binds a127 app logic to a route
-    x-swagger-router-controller: hello_world
-    get:
-      description: Returns 'Hello' to the caller
-      # used as the method name of the controller
-      operationId: hello
+  /document:
+    x-swagger-router-controller: document
+    post:
+      tags: 
+      - documents
+      summary: Uploads a document
+      description: Uploads a document
+      operationId: saveFile
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/json"
       parameters:
-        - name: name
-          in: query
-          description: The name of the person to whom to say hello
-          required: false
-          type: string
+      - name: "file"
+        in: "formData"
+        description: "file to upload"
+        required: true
+        type: "file"
       responses:
-        "200":
-          description: Success
+        200:
+          description: "successful operation"
           schema:
-            # a pointer to a definition
-            $ref: "#/definitions/HelloWorldResponse"
-        # responses may fall through to errors
-        default:
-          description: Error
+            $ref: "#/definitions/ApiResponse"
+  /document/{documentHash}:
+    x-swagger-router-controller: document
+    get:
+      tags: 
+      - "documents"
+      summary: Gets a document by its hash
+      description: Gets a document from IPFS using its hash
+      operationId: getFile
+      produces:
+      - application/pdf
+      - image/jpeg
+      parameters:
+      - name: documentHash
+        in: path
+        description: Document hash
+        required: true
+        type: string
+      responses:
+        200:
+          description: Successful operation
           schema:
-            $ref: "#/definitions/ErrorResponse"
+            type: file
   /swagger:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
 definitions:
-  HelloWorldResponse:
-    required:
-      - message
+  ApiResponse:
     properties:
-      message:
-        type: string
-  ErrorResponse:
-    required:
-      - message
-    properties:
-      message:
-        type: string
+      transaction:
+        type: object
+        properties:
+          tx:
+            type: string
+          hash:
+            type: string
