@@ -63,36 +63,10 @@ paths:
           description: Successful operation
           schema:
             type: file
-  /hash:
-    x-swagger-router-controller: document
-    post:
-      tags: 
-      - "documents"
-      summary: HAHA
-      description: HAHA
-      operationId: saveHash
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-        - in: body
-          name: hash
-          description: Etwas
-          required: true
-          schema:
-            $ref: "#/definitions/Hash"
-      responses:
-        200:
-          description: OK
   /swagger:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
 definitions:
-  Hash:
-    properties:
-      hash:
-        type: string
   ApiResponse:
     properties:
       transaction:

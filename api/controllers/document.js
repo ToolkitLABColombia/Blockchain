@@ -24,19 +24,8 @@ const getFile = (req, res) => {
     })
 }
 
-const saveHash = (req, res) => {
-  const hash = req.swagger.params.hash.value.hash
-  documentService.saveHash(hash)
-    .then(result => {
-      res.status(201).send({result})
-    })
-    .catch(error => {
-      controllerHelper.handleError(error, res)
-    })
-}
 
 module.exports = {
   saveFile,
-  getFile,
-  saveHash
+  getFile
 }
