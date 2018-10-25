@@ -1,18 +1,26 @@
+import {config} from 'dotenv'
+import HDWallet from 'truffle-hdwallet-provider'
 import ToolkitContract from '../contracts/Toolkit'
 import Web3 from 'web3'
 
+config()
+
 const abi = ToolkitContract.abi
-const address = '0x4e84819523c12aaf473377a3f7c11bf913704955'
+const address = process.env.contractAddress
+const mnemonic = process.env.mnemonic
+const host = process.env.host || 'http://localhost:8545'
+const hdWallet = new HDWallet(mnemonic, host)
+let account
 
 export const Toolkit = {
   contract: null,
 
-  init: () => new Promise((resolve, reject) => {
+  init: async() => new Promise((resolve, reject) => {
     try {
-      const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
+      const web3 = new Web3(new Web3.providers.HttpProvider(host))
       const contract = web3.eth.contract(abi)
-      const instance = contract.at(address)
-      Toolkit.contract = instance
+      Toolkit.contract = contract.at(address)
+      account = hdWallet.getAddress(0)
       resolve(true)
     }
     catch (e) {
@@ -20,12 +28,14 @@ export const Toolkit = {
     }
   }),
 
-  add: hash => new Promise((resolve, reject) => {
+  add: data => new Promise((resolve, reject) => {
+    const {hash, name} = data
     const part1 = hash.substr(0, 32)
     const part2 = hash.substr(32)
-    Toolkit.contract.add(part1, part2, {from: '0xe63ea5a99a8273ffee5e4a025afb801e4714fc0e'}, (err, result) => {
+    Toolkit.contract.add(part1, part2, name, {from: account}, (err, result) => {
       if (err) reject(err)
-      resolve(result)
+      const response = {hash, tx: result}
+      resolve(response)
     })
   })
 }
