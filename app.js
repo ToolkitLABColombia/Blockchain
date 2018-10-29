@@ -1,7 +1,11 @@
 import SwaggerExpress from 'swagger-express-mw'
 import Express from 'express'
+import Cors from 'cors'
 
 const app = Express();
+const cors = Cors();
+
+app.use(cors);
 
 module.exports = app; // for testing
 
