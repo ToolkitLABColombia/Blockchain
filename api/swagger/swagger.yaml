@@ -1,7 +1,8 @@
 swagger: "2.0"
 info:
   version: "0.0.1"
-  title: Hello World App
+  title: Toolkit API
+  description: Toolkit API documentation
 # during dev, should point to your local machine
 host: localhost:10010
 # basePath prefixes all resource paths 
@@ -23,6 +24,7 @@ paths:
     post:
       tags: 
       - documents
+      - upload
       summary: Uploads a document
       description: Uploads a document
       operationId: saveFile
@@ -45,7 +47,8 @@ paths:
     x-swagger-router-controller: document
     get:
       tags: 
-      - "documents"
+      - documents
+      - download
       summary: Gets a document by its hash
       description: Gets a document from IPFS using its hash
       operationId: getFile
