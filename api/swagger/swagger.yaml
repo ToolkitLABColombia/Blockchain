@@ -22,8 +22,7 @@ paths:
   /document:
     x-swagger-router-controller: document
     post:
-      tags: 
-      - documents
+      tags:
       - upload
       summary: Uploads a document
       description: Uploads a document
@@ -46,8 +45,7 @@ paths:
   /document/{documentHash}:
     x-swagger-router-controller: document
     get:
-      tags: 
-      - documents
+      tags:
       - download
       summary: Gets a document by its hash
       description: Gets a document from IPFS using its hash
@@ -72,8 +70,7 @@ paths:
   /validate:
     x-swagger-router-controller: document
     post:
-      tags: 
-      - documents
+      tags:
       - validate
       summary: Uploads a document to be validated
       description: Uploads a document, calculates its IPFS hash, looks for it on the blockchain and determines if it was uploaded using this toolkit.

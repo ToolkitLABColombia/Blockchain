@@ -1,5 +1,8 @@
 import fileType from 'file-type'
+import {config} from 'dotenv'
 import {ipfs} from '../helpers/IPFS'
+
+config()
 
 /**
  * Saves a binary file into the specified IPFS network
@@ -9,7 +12,9 @@ import {ipfs} from '../helpers/IPFS'
  * the uploaded file name.
  */
 const add = (file, validate = false)=> new Promise((resolve, reject) => {
-  const options = {}
+  const options = {
+    pin: process.env.pin || false
+  }
   if (validate) options['onlyHash'] = true
   ipfs.files.add(file.buffer, options, (err, response) => {
     if (err) reject(err)
