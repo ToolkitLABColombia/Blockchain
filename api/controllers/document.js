@@ -3,7 +3,18 @@ import documentService from '../services/document'
 
 const saveFile = (req, res) => {
   const file = req.swagger.params.file.value
-  documentService.saveFile(file)
+  documentService.addFile(file)
+    .then(result => {
+      res.status(201).send({result})
+    })
+    .catch(error => {
+      controllerHelper.handleError(error, res)
+    })
+}
+
+const validateFile = (req, res) => {
+  const file = req.swagger.params.file.value
+  documentService.addFile(file, true)
     .then(result => {
       res.status(201).send({result})
     })
@@ -27,5 +38,6 @@ const getFile = (req, res) => {
 
 module.exports = {
   saveFile,
-  getFile
+  getFile,
+  validateFile
 }
