@@ -1,0 +1,88 @@
+{
+	"info": {
+		"_postman_id": "cdecdb9b-6fb4-413d-adcc-b2195a240c5a",
+		"name": "TOOLKIT",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Upload a file",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": ""
+						}
+					]
+				},
+				"url": {
+					"raw": "{{BasePath}}/document",
+					"host": [
+						"{{BasePath}}"
+					],
+					"path": [
+						"document"
+					]
+				},
+				"description": "Uploads a file to the toolkit."
+			},
+			"response": []
+		},
+		{
+			"name": "Getting a file",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{BasePath}}/document/QmQT5UaToLDvRSw3ZPDi6zcZKhnSFprPRAbpSJnVkgVmMa",
+					"host": [
+						"{{BasePath}}"
+					],
+					"path": [
+						"document",
+						"QmQT5UaToLDvRSw3ZPDi6zcZKhnSFprPRAbpSJnVkgVmMa"
+					]
+				},
+				"description": "Gets a file via its IPFS hash from the Toolkit"
+			},
+			"response": []
+		},
+		{
+			"name": "Validate legitimate file",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": ""
+						}
+					]
+				},
+				"url": {
+					"raw": "{{BasePath}}/validate",
+					"host": [
+						"{{BasePath}}"
+					],
+					"path": [
+						"validate"
+					]
+				},
+				"description": "Validates if a copy of a file was uploaded using this toolkit"
+			},
+			"response": []
+		}
+	]
+}
