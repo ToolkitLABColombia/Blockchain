@@ -2,7 +2,7 @@ swagger: "2.0"
 info:
   version: "0.0.1"
   title: Toolkit API
-  description: Toolkit API documentation
+  description: Toolkit API documentation and test
 # during dev, should point to your local machine
 host: localhost:10010
 # basePath prefixes all resource paths 
@@ -29,18 +29,18 @@ paths:
       description: Uploads a document
       operationId: saveFile
       consumes:
-      - "multipart/form-data"
+      - multipart/form-data
       produces:
-      - "application/json"
+      - application/json
       parameters:
-      - name: "file"
-        in: "formData"
-        description: "file to upload"
+      - name: file
+        in: formData
+        description: file to upload
         required: true
-        type: "file"
+        type: file
       responses:
         200:
-          description: "successful operation"
+          description: successful operation
           schema:
             $ref: "#/definitions/ApiResponse"
   /document/{documentHash}:
@@ -55,6 +55,7 @@ paths:
       produces:
       - application/pdf
       - image/jpeg
+      - image/png
       parameters:
       - name: documentHash
         in: path
@@ -66,6 +67,33 @@ paths:
           description: Successful operation
           schema:
             type: file
+        400:
+          description: The document with the provided hash hasn't been found
+  /validate:
+    x-swagger-router-controller: document
+    post:
+      tags: 
+      - documents
+      - validate
+      summary: Uploads a document to be validated
+      description: Uploads a document, calculates its IPFS hash, looks for it on the blockchain and determines if it was uploaded using this toolkit.
+      operationId: validateFile
+      consumes:
+      - multipart/form-data
+      produces:
+      - application/json
+      parameters:
+      - name: file
+        in: formData
+        description: file to validate
+        required: true
+        type: file
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: boolean
+            description: true if it was uploaded using this toolkit, otherwise, false.
   /swagger:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
