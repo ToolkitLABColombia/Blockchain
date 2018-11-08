@@ -1,6 +1,7 @@
 export const errors = {
   BAD_REQUEST: {
-    error: 'Bad request', msg: 'The request could not be understood by the server due to malformed syntax.',
+    error: 'Bad request',
+    msg: 'The request could not be understood by the server due to malformed syntax.',
     code: 400
   },
   UNAUTHORIZED: {error: 'Unauthorized', msg: 'Missing or invalid authentication token.', code: 401},
@@ -22,4 +23,10 @@ export const errors = {
   }
 }
 
+/**
+ * Returns a detailed error object
+ * @param code Error code, found in this archive.
+ * @param detailed Custom Message
+ * @returns {error: {error, msg, code, detailed}}
+ */
 export const error = (code, detailed = null) => Object.assign(code, {detailed})
