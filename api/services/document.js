@@ -21,7 +21,13 @@ const addFile = (file, validate = false) => new Promise((resolve, reject) => {
             const part2 = hash.substr(32)
             return Toolkit.get('validate', [part1, part2])
           })
-          .then(fileName => !!fileName)
+          .then(fileName => {
+            if (!!fileName) {
+              const {hash} = result
+              return {hash, fileName}
+            }
+            reject(error(errors.NOT_FOUND, `The document was not found in our records`))
+          })
       return saveHash(result)
     })
     .then(resolve)
