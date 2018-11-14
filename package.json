@@ -17,7 +17,7 @@
     "http": "^0.0.0",
     "https": "^1.0.0",
     "ipfs-api": "^25.0.0",
-    "swagger-express-mw": "^0.1.0",
+    "swagger-express-mw": "^0.7.0",
     "truffle-hdwallet-provider": "^0.0.6",
     "web3": "^1.0.0-beta.36"
   },
