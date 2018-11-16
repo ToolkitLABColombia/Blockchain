@@ -14,7 +14,7 @@ const saveFile = (req, res) => {
 
 const validateFile = (req, res) => {
   const file = req.swagger.params.file.value
-  documentService.addFile(file, true)
+  documentService.validateFile(file)
     .then(result => {
       res.status(201).send({result})
     })
