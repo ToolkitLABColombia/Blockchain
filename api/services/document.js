@@ -3,33 +3,44 @@ import IPFSRepository from '../repositories/IPFS'
 import {Toolkit} from '../repositories/SmartContract'
 
 /**
+ * Validates whether or not a file does exist in our SmartContract
+ * @param file The file to validate
+ * @returns {Promise<{hash: 'IPFS_HASH', tx: 'ETHEREUM_TX_HASH'}>}.
+ */
+const validateFile = file => new Promise((resolve, reject) => {
+  IPFSRepository.add(file, true)
+    .then(result => {
+      return Toolkit.init()
+        .then(() => {
+          const {hash} = result
+          const part1 = hash.substr(0, 32)
+          const part2 = hash.substr(32)
+          return Toolkit.get('validate', [part1, part2])
+        })
+        .then(fileName => {
+          if (!!fileName) {
+            const {hash} = result
+            resolve({hash, fileName})
+          }
+          reject(error(errors.NOT_FOUND, `The document was not found in our records`))
+        })
+    })
+})
+/**
  * Saves a binary file to the specified IPFS network and the
  * specified Ethereum network
  * @param file The binary file
- * @param validate boolean, determines if the add function uploads the file (default), or only gets the document IPFS hash
  * @returns {Promise<{hash: 'IPFS_HASH', tx: 'ETHEREUM_TX_HASH'}>} An object with the IPFS hash and
  * Ethereum transaction hash.
  */
-const addFile = (file, validate = false) => new Promise((resolve, reject) => {
-  IPFSRepository.add(file, validate)
+const addFile = file => new Promise((resolve, reject) => {
+  const result = validateFile(file)
     .then(result => {
-      if (validate)
-        return Toolkit.init()
-          .then(() => {
-            const {hash} = result
-            const part1 = hash.substr(0, 32)
-            const part2 = hash.substr(32)
-            return Toolkit.get('validate', [part1, part2])
-          })
-          .then(fileName => {
-            if (!!fileName) {
-              const {hash} = result
-              return {hash, fileName}
-            }
-            reject(error(errors.NOT_FOUND, `The document was not found in our records`))
-          })
-      return saveHash(result)
+      reject(error(errors.CONFLICT, `There already is a document with hash ${result.hash}`))
     })
+    .catch(() => IPFSRepository.add(file))
+  result
+    .then(saveHash)
     .then(resolve)
     .catch(e => {
       reject(error(errors.INTERNAL_SERVER_ERROR, e.message))
@@ -84,5 +95,6 @@ const saveHash = data => new Promise((resolve, reject) => {
 
 export default {
   addFile,
-  getFile
+  getFile,
+  validateFile
 }

@@ -7,7 +7,7 @@ export const errors = {
   UNAUTHORIZED: {error: 'Unauthorized', msg: 'Missing or invalid authentication token.', code: 401},
   FORBIDDEN: {error: 'Forbidden', msg: 'You are not allowed to perform this operation', code: 403},
   NOT_FOUND: {error: 'Not found', msg: 'Resource not found', code: 404},
-  CONFLICT: {error: 'Conflict', msg: 'Request could not be processed because of conflict in the request', code: 409},
+  CONFLICT: {error: 'Conflict', msg: 'Request could not be processed because of conflict with the request', code: 409},
   INTERNAL_SERVER_ERROR: {
     error: 'Internal server error', msg: 'The server encountered an unexpected condition',
     code: 500
