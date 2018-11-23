@@ -4,12 +4,13 @@ info:
   title: Toolkit API
   description: Toolkit API documentation and test
 # during dev, should point to your local machine
-host: toolkitbc.eastus.cloudapp.azure.com:10443
+host: localhost:10010
 # basePath prefixes all resource paths 
 basePath: /
 # 
 schemes:
   # tip: remove http to make production-grade
+  - http
   - https
 # format of bodies a client can send (Content-Type)
 consumes:
