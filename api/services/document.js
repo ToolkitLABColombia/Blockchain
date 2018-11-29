@@ -36,7 +36,7 @@ const validateFile = file => new Promise((resolve, reject) => {
 const addFile = file => new Promise((resolve, reject) => {
   const result = validateFile(file)
     .then(result => {
-      resolve({hash: result.hash, tx: 'No fue enviado a la cadena de bloques, ya que el archivo fue subido previamente'})
+      resolve({hash: result.hash, tx: `No fue enviado a la cadena de bloques, ya que el archivo \"${result.fileName}\" fue subido previamente`})
     })
     .catch(() => IPFSRepository.add(file))
   result
