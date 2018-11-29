@@ -30,13 +30,14 @@ const validateFile = file => new Promise((resolve, reject) => {
  * Saves a binary file to the specified IPFS network and the
  * specified Ethereum network
  * @param file The binary file
- * @returns {Promise<{hash: 'IPFS_HASH', tx: 'ETHEREUM_TX_HASH'}>} An object with the IPFS hash and
+ * @returns {Promise<{hash: 'IPFS_HASH', tx: 'ETHEREUM_TX_HASH' | fileName: 'EXISTING_FILE_NAME'}>} An object with the IPFS hash and
  * Ethereum transaction hash.
  */
 const addFile = file => new Promise((resolve, reject) => {
   const result = validateFile(file)
     .then(result => {
-      resolve({hash: result.hash, tx: `No fue enviado a la cadena de bloques, ya que el archivo \"${result.fileName}\" fue subido previamente`})
+      const {hash, fileName} = result
+      reject(error(errors.CONFLICT, {hash, fileName}))
     })
     .catch(() => IPFSRepository.add(file))
   result
