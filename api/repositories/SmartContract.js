@@ -72,7 +72,7 @@ const sign = functionAbi => new Promise((resolve, reject) => {
       .then(nonce => {
         console.log(`Nonce: ${nonce}`)
         const txParams = {
-          gasPrice: 100000,
+          gasPrice: 100000000000,
           gasLimit: 3000000,
           to: address,
           data: functionAbi,
