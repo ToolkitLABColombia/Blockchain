@@ -142,7 +142,7 @@ The API Project does provide self signed (not valid ones) certificates to allow 
 In order to test this using Postman, refer to the [Postman](#postman) section. Just change the environment to TOOLKIT https.
 
 ### Production Method
-For your convenience, there is a prepared image at [ViveLab Bogota's Docker Hub Account](https://hub.docker.com/r/vivelabbogota/toolkit-api/). Just pick the version that fits better. We highly recommend to use the v1.0.0 as the time this documentation is written.
+For your convenience, there is a prepared image at [ViveLab Bogota's Docker Hub Account](https://hub.docker.com/r/vivelabbogota/toolkit-api/). Just pick the version that fits better. We highly recommend to use the v1.0.1 as the time this documentation is written.
 
 It's worthy to mention that on production you should use a `.env` file fully dedicated to that environment. You also need to provide valid SSL certificates for the API to work properly. It is not recommended to use self signed certificates.
 
