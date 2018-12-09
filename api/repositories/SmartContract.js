@@ -67,21 +67,26 @@ export const Toolkit = {
 
 const sign = functionAbi => new Promise((resolve, reject) => {
   try {
-    console.log('Signing transaction...')
-    Toolkit.web3.eth.getTransactionCount(account)
-      .then(nonce => {
-        console.log(`Nonce: ${nonce}`)
-        const txParams = {
-          gasPrice: 100000000000,
-          gasLimit: 3000000,
-          to: address,
-          data: functionAbi,
-          from: account,
-          nonce
-        }
-        const tx = new Tx(txParams)
-        tx.sign(privateKey)
-        resolve(tx.serialize().toString('hex'))
+    Toolkit.web3.eth.getGasPrice()
+      .then(gasPrice => {
+        console.log(`Gas Price: ${gasPrice}`)
+        Toolkit.web3.eth.getTransactionCount(account)
+          .then(nonce => {
+            console.log(`Nonce: ${nonce}`)
+            const txParams = {
+              gasPrice,
+              gasLimit: 3000000,
+              to: address,
+              data: functionAbi,
+              from: account,
+              nonce
+            }
+            const tx = new Tx(txParams)
+            console.log(`Serialized Tx: ${tx}`)
+            tx.sign(privateKey)
+            resolve(tx.serialize().toString('hex'))
+          })
+        .catch(reject)
       })
   }
   catch (e) {
