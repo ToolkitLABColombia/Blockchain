@@ -40,14 +40,14 @@ export const Toolkit = {
    */
   post: (functionName, params) => new Promise((resolve, reject) => {
     console.log(`${functionName}(${params.join()})`)
+    const contractFunction = Toolkit.contract.methods[functionName](...params)
     const functionAbi = Toolkit.contract.methods[functionName](...params).encodeABI()
-    sign(functionAbi)
-      .then(serializedTx => {
-        Toolkit.web3.eth.sendSignedTransaction(`0x${serializedTx}`)
-          .then(tx => {
-            console.log(tx.transactionHash)
-            resolve(tx.transactionHash)
-          })
+    contractFunction.estimateGas(from)
+      .then(gas => sign(functionAbi, gas))
+      .then(serializedTx => Toolkit.web3.eth.sendSignedTransaction(`0x${serializedTx}`))
+      .then(tx => {
+        console.log(tx.transactionHash)
+        resolve(tx.transactionHash)
       })
       .catch(reject)
   }),
@@ -65,7 +65,7 @@ export const Toolkit = {
   })
 }
 
-const sign = functionAbi => new Promise((resolve, reject) => {
+const sign = (functionAbi, gasLimit) => new Promise((resolve, reject) => {
   try {
     Toolkit.web3.eth.getGasPrice()
       .then(gasPrice => {
@@ -74,20 +74,21 @@ const sign = functionAbi => new Promise((resolve, reject) => {
           .then(nonce => {
             console.log(`Nonce: ${nonce}`)
             const txParams = {
-              gasPrice,
-              gasLimit: 3000000,
+              gasPrice: Toolkit.web3.utils.toHex(gasPrice),
+              gasLimit,
               to: address,
               data: functionAbi,
               from: account,
               nonce
             }
             const tx = new Tx(txParams)
-            console.log(`Serialized Tx: ${tx}`)
+            console.log(gasPrice, gasLimit)
             tx.sign(privateKey)
             resolve(tx.serialize().toString('hex'))
           })
-        .catch(reject)
+          .catch(reject)
       })
+      .catch(reject)
   }
   catch (e) {
     reject(e)
