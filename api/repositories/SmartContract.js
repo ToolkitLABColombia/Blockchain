@@ -35,18 +35,16 @@ export const Toolkit = {
   /**
    * Post makes calls to the writing contract functions
    * @param functionName The expected contract function to be executed
-   * @param params An array of the expected parameters the contract function receives.
+   * @param params Expected parameters the contract function receives.
    * @returns {Promise<String>} A transaction hash on successful operations.
    */
-  post: (functionName, params) => new Promise((resolve, reject) => {
-    console.log(`${functionName}(${params.join()})`)
+  post: (functionName, ...params) => new Promise((resolve, reject) => {
     const contractFunction = Toolkit.contract.methods[functionName](...params)
-    const functionAbi = Toolkit.contract.methods[functionName](...params).encodeABI()
+    const functionAbi = contractFunction.encodeABI()
     contractFunction.estimateGas(from)
       .then(gas => sign(functionAbi, gas))
       .then(serializedTx => Toolkit.web3.eth.sendSignedTransaction(`0x${serializedTx}`))
       .then(tx => {
-        console.log(tx.transactionHash)
         resolve(tx.transactionHash)
       })
       .catch(reject)
@@ -55,10 +53,10 @@ export const Toolkit = {
   /**
    * Get makes calls to the only read contract functions
    * @param functionName The expected contract function to be consulted
-   * @param params An array of the expected parameters the contract function receives
+   * @param params Expected parameters the contract function receives
    * @returns {Promise<any>} A tuple of n-th elements the function returns
    */
-  get: (functionName, params) => new Promise((resolve, reject) => {
+  get: (functionName, ...params) => new Promise((resolve, reject) => {
     Toolkit.contract.methods[functionName](...params).call({from: account})
       .then(resolve)
       .catch(reject)
@@ -69,10 +67,8 @@ const sign = (functionAbi, gasLimit) => new Promise((resolve, reject) => {
   try {
     Toolkit.web3.eth.getGasPrice()
       .then(gasPrice => {
-        console.log(`Gas Price: ${gasPrice}`)
         Toolkit.web3.eth.getTransactionCount(account)
           .then(nonce => {
-            console.log(`Nonce: ${nonce}`)
             const txParams = {
               gasPrice: Toolkit.web3.utils.toHex(gasPrice),
               gasLimit,
@@ -82,7 +78,6 @@ const sign = (functionAbi, gasLimit) => new Promise((resolve, reject) => {
               nonce
             }
             const tx = new Tx(txParams)
-            console.log(gasPrice, gasLimit)
             tx.sign(privateKey)
             resolve(tx.serialize().toString('hex'))
           })

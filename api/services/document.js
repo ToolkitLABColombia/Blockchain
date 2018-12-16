@@ -15,7 +15,7 @@ const validateFile = file => new Promise((resolve, reject) => {
           const {hash} = result
           const part1 = hash.substr(0, 32)
           const part2 = hash.substr(32)
-          return Toolkit.get('validate', [part1, part2])
+          return Toolkit.get('validate', part1, part2)
         })
         .then(fileName => {
           if (!!fileName) {
@@ -58,7 +58,7 @@ const getFile = hash => new Promise((resolve, reject) => {
     .then(() => {
       const part1 = hash.substr(0, 32)
       const part2 = hash.substr(32)
-      return Toolkit.get('validate', [part1, part2])
+      return Toolkit.get('validate', part1, part2)
     })
     .then(fileName => {
       if (fileName)
@@ -83,7 +83,7 @@ const saveHash = data => new Promise((resolve, reject) => {
       const {hash, name} = data
       const part1 = hash.substr(0, 32)
       const part2 = hash.substr(32)
-      Toolkit.post('add', [part1, part2, name])
+      Toolkit.post('add', part1, part2, name)
         .then(tx => {
           resolve({hash, tx})
         })
